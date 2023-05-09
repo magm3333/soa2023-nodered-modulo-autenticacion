@@ -2,13 +2,656 @@
     {
         "id": "cdd817c49b7d17bc",
         "type": "tab",
-        "label": "Flow 1",
+        "label": "Config",
         "disabled": false,
         "info": "",
         "env": []
     },
     {
-        "id": "b3bc1c02c216fcec",
+        "id": "50b2f4a82ddc823c",
+        "type": "tab",
+        "label": "Autenticador",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "a6099c015afa8015",
+        "type": "subflow",
+        "name": "Status",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 20,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "840bcbb0383e97c9"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 1220,
+                "y": 160,
+                "wires": [
+                    {
+                        "id": "2088e91fe15ebbf8",
+                        "port": 0
+                    }
+                ]
+            },
+            {
+                "x": 1260,
+                "y": 220,
+                "wires": [
+                    {
+                        "id": "2088e91fe15ebbf8",
+                        "port": 1
+                    },
+                    {
+                        "id": "2088e91fe15ebbf8",
+                        "port": 2
+                    }
+                ]
+            },
+            {
+                "x": 1260,
+                "y": 280,
+                "wires": [
+                    {
+                        "id": "2088e91fe15ebbf8",
+                        "port": 3
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99",
+        "outputLabels": [
+            "OK",
+            "Renovar Token",
+            "Desconectado"
+        ],
+        "status": {
+            "x": 1040,
+            "y": 20,
+            "wires": [
+                {
+                    "id": "840bcbb0383e97c9",
+                    "port": 1
+                },
+                {
+                    "id": "33343c671b718120",
+                    "port": 0
+                },
+                {
+                    "id": "2088e91fe15ebbf8",
+                    "port": 0
+                },
+                {
+                    "id": "2088e91fe15ebbf8",
+                    "port": 1
+                },
+                {
+                    "id": "2088e91fe15ebbf8",
+                    "port": 2
+                },
+                {
+                    "id": "2088e91fe15ebbf8",
+                    "port": 3
+                }
+            ]
+        }
+    },
+    {
+        "id": "a9ba62026833bae4",
+        "type": "subflow",
+        "name": "Autenticacion",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 50,
+                "y": 30,
+                "wires": [
+                    {
+                        "id": "79ad1c8bf74e6254"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 980,
+                "y": 140,
+                "wires": [
+                    {
+                        "id": "9f397f106e33b03c",
+                        "port": 0
+                    }
+                ]
+            },
+            {
+                "x": 970,
+                "y": 260,
+                "wires": [
+                    {
+                        "id": "9f397f106e33b03c",
+                        "port": 1
+                    }
+                ]
+            }
+        ],
+        "env": [
+            {
+                "name": "username",
+                "type": "str",
+                "value": "admin"
+            },
+            {
+                "name": "password",
+                "type": "str",
+                "value": "admin"
+            }
+        ],
+        "meta": {},
+        "color": "#DDAA99",
+        "outputLabels": [
+            "OK",
+            "No OK"
+        ],
+        "status": {
+            "x": 780,
+            "y": 20,
+            "wires": [
+                {
+                    "id": "f16d9911bdb1c7c3",
+                    "port": 0
+                },
+                {
+                    "id": "e9f0f8b27ab1ddb6",
+                    "port": 0
+                },
+                {
+                    "id": "1f553a0514e1ed2b",
+                    "port": 0
+                }
+            ]
+        }
+    },
+    {
+        "id": "840bcbb0383e97c9",
+        "type": "function",
+        "z": "a6099c015afa8015",
+        "name": "Check URL & Token",
+        "func": "let authtoken = msg.authtoken;\nif (!authtoken)\n    authtoken = \"nada\";\nflow.set('authtoken', authtoken);\n\nlet url = flow.get('urlBase') || msg.urlBase;\nif (!url) {\n    return [null, { payload: \"No se ha definido msg.urlBase\" }];\n}\nif (url && url.length > 5 && (url.startsWith(\"http\") || url.startsWith(\"https\"))) {\n    if (!url.endsWith(\"/\")) {\n        url += \"/\";\n    }\n    //node.warn(url)\n    flow.set('urlBase', url);\n    return [msg, null];\n}\n\nreturn [null, { payload: \"Error en definición de urlBase\" }];",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 240,
+        "y": 80,
+        "wires": [
+            [
+                "e09600783fdd80e6"
+            ],
+            []
+        ],
+        "outputLabels": [
+            "OK",
+            "Error"
+        ]
+    },
+    {
+        "id": "e09600783fdd80e6",
+        "type": "function",
+        "z": "a6099c015afa8015",
+        "name": "Prepare Request Auth OK",
+        "func": "msg.url = flow.get('urlBase') +'api/producto/buscar/1234?authtoken='+flow.get('authtoken');\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 530,
+        "y": 160,
+        "wires": [
+            [
+                "40d571d6ceea8845",
+                "33343c671b718120"
+            ]
+        ]
+    },
+    {
+        "id": "40d571d6ceea8845",
+        "type": "http request",
+        "z": "a6099c015afa8015",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": false,
+        "url": "",
+        "persist": false,
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 750,
+        "y": 220,
+        "wires": [
+            [
+                "2088e91fe15ebbf8"
+            ]
+        ]
+    },
+    {
+        "id": "2088e91fe15ebbf8",
+        "type": "function",
+        "z": "a6099c015afa8015",
+        "name": "Check Response Status",
+        "func": "if (msg.statusCode == 200) {\n    flow.set('$parent.lastStatus', { code: 0, descripcion: 'OK', tiempo: new Date() });\n    return [{ payload: \"OK\", urlBase: flow.get('urlBase') }, null, null, null];\n} else if (msg.statusCode == 401) {\n    flow.set('$parent.lastStatus', { code: 1, descripcion: 'No logueado', tiempo: new Date() });\n    return [null, { payload: \"No logueado\", urlBase: flow.get('urlBase') }, null, null];\n} else if (msg.statusCode == 403) {\n    flow.set('$parent.lastStatus', { code: 2, descripcion: 'No autorizado', tiempo: new Date() });\n    return [null, null, { payload: \"No autorizado\", urlBase: flow.get('urlBase') }, null];\n} else if (msg.statusCode == 'ECONNREFUSED') {\n    flow.set('$parent.lastStatus', { code: -1, descripcion: 'Desconectado', tiempo: new Date() });\n    return [null, null, null, { payload: \"Desconectado\", urlBase: flow.get('urlBase') }];\n}",
+        "outputs": 4,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 970,
+        "y": 220,
+        "wires": [
+            [],
+            [],
+            [],
+            []
+        ],
+        "outputLabels": [
+            "200 - OK",
+            "401 - No logueado",
+            "403 - No autorizado",
+            "No disponible"
+        ]
+    },
+    {
+        "id": "33343c671b718120",
+        "type": "change",
+        "z": "a6099c015afa8015",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "Requiriendo....",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 740,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "74bedc9c5505b721",
+        "type": "change",
+        "z": "a9ba62026833bae4",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "username",
+                "pt": "msg",
+                "to": "username",
+                "tot": "env"
+            },
+            {
+                "t": "set",
+                "p": "password",
+                "pt": "msg",
+                "to": "password",
+                "tot": "env"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 260,
+        "y": 100,
+        "wires": [
+            [
+                "7b240d4e5e01b108"
+            ]
+        ]
+    },
+    {
+        "id": "7b240d4e5e01b108",
+        "type": "function",
+        "z": "a9ba62026833bae4",
+        "name": "Prepare Request",
+        "func": "msg.url = `${msg.urlBase}api/auth/login?username=${msg.username}&password=${msg.password}`;\n//node.warn(msg.url)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 190,
+        "y": 200,
+        "wires": [
+            [
+                "f16d9911bdb1c7c3",
+                "bb1310ad2700bfcf"
+            ]
+        ]
+    },
+    {
+        "id": "c5e60ab2b0291634",
+        "type": "http request",
+        "z": "a9ba62026833bae4",
+        "name": "",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 395,
+        "y": 200,
+        "wires": [
+            [
+                "ea691fdca076668a"
+            ]
+        ],
+        "l": false
+    },
+    {
+        "id": "f16d9911bdb1c7c3",
+        "type": "change",
+        "z": "a9ba62026833bae4",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "Pidiendo....",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 540,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9f397f106e33b03c",
+        "type": "switch",
+        "z": "a9ba62026833bae4",
+        "name": "",
+        "property": "statusCode",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "200",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 570,
+        "y": 200,
+        "wires": [
+            [
+                "e9f0f8b27ab1ddb6"
+            ],
+            [
+                "1f553a0514e1ed2b"
+            ]
+        ],
+        "outputLabels": [
+            "OK",
+            "No OK"
+        ]
+    },
+    {
+        "id": "e9f0f8b27ab1ddb6",
+        "type": "change",
+        "z": "a9ba62026833bae4",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "Token OK",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 780,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1f553a0514e1ed2b",
+        "type": "change",
+        "z": "a9ba62026833bae4",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "Token Error",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 760,
+        "y": 240,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "bb1310ad2700bfcf",
+        "type": "change",
+        "z": "a9ba62026833bae4",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "procesando",
+                "pt": "flow",
+                "to": "true",
+                "tot": "bool"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 345,
+        "y": 200,
+        "wires": [
+            [
+                "c5e60ab2b0291634"
+            ]
+        ],
+        "l": false
+    },
+    {
+        "id": "ea691fdca076668a",
+        "type": "change",
+        "z": "a9ba62026833bae4",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "procesando",
+                "pt": "flow",
+                "to": "false",
+                "tot": "bool"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 455,
+        "y": 200,
+        "wires": [
+            [
+                "9f397f106e33b03c"
+            ]
+        ],
+        "l": false
+    },
+    {
+        "id": "79ad1c8bf74e6254",
+        "type": "switch",
+        "z": "a9ba62026833bae4",
+        "name": "",
+        "property": "procesando",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "true"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 130,
+        "y": 60,
+        "wires": [
+            [
+                "74bedc9c5505b721"
+            ]
+        ]
+    },
+    {
+        "id": "f2b64eb7ee44de64",
+        "type": "file in",
+        "z": "cdd817c49b7d17bc",
+        "name": "",
+        "filename": "/data/config.json",
+        "filenameType": "str",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 400,
+        "y": 140,
+        "wires": [
+            [
+                "e51c26fbb8a8e9fb"
+            ]
+        ]
+    },
+    {
+        "id": "79dbbee534b63556",
+        "type": "file",
+        "z": "cdd817c49b7d17bc",
+        "name": "",
+        "filename": "/data/config.json",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 680,
+        "y": 260,
+        "wires": [
+            [
+                "e17dca21b2c833b2"
+            ]
+        ]
+    },
+    {
+        "id": "e51c26fbb8a8e9fb",
+        "type": "json",
+        "z": "cdd817c49b7d17bc",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 570,
+        "y": 140,
+        "wires": [
+            [
+                "d160621457b78805"
+            ]
+        ]
+    },
+    {
+        "id": "d160621457b78805",
+        "type": "change",
+        "z": "cdd817c49b7d17bc",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "data",
+                "pt": "global",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 740,
+        "y": 140,
+        "wires": [
+            [
+                "783138b1deee2fed"
+            ]
+        ]
+    },
+    {
+        "id": "548950d7a3dbae0c",
         "type": "inject",
         "z": "cdd817c49b7d17bc",
         "name": "",
@@ -23,33 +666,325 @@
         ],
         "repeat": "",
         "crontab": "",
-        "once": false,
+        "once": true,
         "onceDelay": 0.1,
         "topic": "",
         "payload": "",
         "payloadType": "date",
-        "x": 180,
-        "y": 60,
+        "x": 130,
+        "y": 160,
         "wires": [
             [
-                "3004048387103ebb"
+                "f2b64eb7ee44de64"
             ]
         ]
     },
     {
-        "id": "3004048387103ebb",
-        "type": "debug",
+        "id": "783138b1deee2fed",
+        "type": "link out",
         "z": "cdd817c49b7d17bc",
-        "name": "debug 1",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 420,
-        "y": 60,
+        "name": "Salida Config Global",
+        "mode": "link",
+        "links": [
+            "cf5f3e53232d9e70"
+        ],
+        "x": 915,
+        "y": 140,
         "wires": []
+    },
+    {
+        "id": "4414b17f2d88eff2",
+        "type": "watch",
+        "z": "cdd817c49b7d17bc",
+        "name": "",
+        "files": "/data/config.json",
+        "recursive": "",
+        "x": 320,
+        "y": 60,
+        "wires": [
+            [
+                "f2b64eb7ee44de64"
+            ]
+        ]
+    },
+    {
+        "id": "91aabe14cdb30caa",
+        "type": "catch",
+        "z": "cdd817c49b7d17bc",
+        "name": "",
+        "scope": [
+            "f2b64eb7ee44de64"
+        ],
+        "uncaught": false,
+        "x": 290,
+        "y": 260,
+        "wires": [
+            [
+                "450d98ef0e3f0162"
+            ]
+        ]
+    },
+    {
+        "id": "450d98ef0e3f0162",
+        "type": "function",
+        "z": "cdd817c49b7d17bc",
+        "name": "Default File",
+        "func": "msg.payload={\n    \"urlBase\":\"https://tridentisimo.mooo.com\"\n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 450,
+        "y": 260,
+        "wires": [
+            [
+                "79dbbee534b63556"
+            ]
+        ]
+    },
+    {
+        "id": "e17dca21b2c833b2",
+        "type": "delay",
+        "z": "cdd817c49b7d17bc",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 860,
+        "y": 260,
+        "wires": [
+            [
+                "f2b64eb7ee44de64"
+            ]
+        ]
+    },
+    {
+        "id": "da7f0926f951ca98",
+        "type": "http in",
+        "z": "cdd817c49b7d17bc",
+        "name": "",
+        "url": "/config",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 250,
+        "y": 420,
+        "wires": [
+            [
+                "e4e604c7c0b1ce4c"
+            ]
+        ]
+    },
+    {
+        "id": "e9edf182281db4e5",
+        "type": "http in",
+        "z": "cdd817c49b7d17bc",
+        "name": "",
+        "url": "/config",
+        "method": "put",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 250,
+        "y": 480,
+        "wires": [
+            [
+                "11725f3aaf662faa"
+            ]
+        ]
+    },
+    {
+        "id": "e4e604c7c0b1ce4c",
+        "type": "file in",
+        "z": "cdd817c49b7d17bc",
+        "name": "",
+        "filename": "/data/config.json",
+        "filenameType": "str",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 440,
+        "y": 420,
+        "wires": [
+            [
+                "389d90b3dd40a51a"
+            ]
+        ]
+    },
+    {
+        "id": "389d90b3dd40a51a",
+        "type": "json",
+        "z": "cdd817c49b7d17bc",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 610,
+        "y": 420,
+        "wires": [
+            [
+                "c2b319ba85cd5ab5"
+            ]
+        ]
+    },
+    {
+        "id": "c2b319ba85cd5ab5",
+        "type": "http response",
+        "z": "cdd817c49b7d17bc",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 750,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "11725f3aaf662faa",
+        "type": "file",
+        "z": "cdd817c49b7d17bc",
+        "name": "",
+        "filename": "/data/config.json",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 460,
+        "y": 480,
+        "wires": [
+            [
+                "78b38407569236fe"
+            ]
+        ]
+    },
+    {
+        "id": "78b38407569236fe",
+        "type": "http response",
+        "z": "cdd817c49b7d17bc",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 750,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "cf5f3e53232d9e70",
+        "type": "link in",
+        "z": "50b2f4a82ddc823c",
+        "name": "link in 1",
+        "links": [
+            "783138b1deee2fed"
+        ],
+        "x": 85,
+        "y": 40,
+        "wires": [
+            [
+                "6cf66449211a991b"
+            ]
+        ]
+    },
+    {
+        "id": "6cf66449211a991b",
+        "type": "change",
+        "z": "50b2f4a82ddc823c",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "urlBase",
+                "pt": "msg",
+                "to": "data.urlBase",
+                "tot": "global"
+            },
+            {
+                "t": "set",
+                "p": "authtoken",
+                "pt": "msg",
+                "to": "authtoken",
+                "tot": "global"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 220,
+        "y": 40,
+        "wires": [
+            [
+                "36779c405db25d3a"
+            ]
+        ]
+    },
+    {
+        "id": "36779c405db25d3a",
+        "type": "subflow:a6099c015afa8015",
+        "z": "50b2f4a82ddc823c",
+        "name": "",
+        "x": 450,
+        "y": 80,
+        "wires": [
+            [],
+            [
+                "d428fa8850dc9038"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "fd28a29e05ba9905",
+        "type": "change",
+        "z": "50b2f4a82ddc823c",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "authtoken",
+                "pt": "global",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 960,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d428fa8850dc9038",
+        "type": "subflow:a9ba62026833bae4",
+        "z": "50b2f4a82ddc823c",
+        "name": "",
+        "x": 690,
+        "y": 100,
+        "wires": [
+            [
+                "fd28a29e05ba9905"
+            ],
+            []
+        ]
     }
 ]
